@@ -152,3 +152,7 @@ make scripts.run_finetune_sort_annotation
 # Stage 2.3: train DPO-finetuned model
 make finetune.train_real
 ```
+
+## 🙏 Acknowlegement
+
+- The data annotation tool and motion primitives used in our code is adapted from [UniFolding](https://github.com/xiaoxiaoxh/UniFolding).

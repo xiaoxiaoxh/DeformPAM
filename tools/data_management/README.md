@@ -5,6 +5,7 @@ This module manages data collection and storage in this project, it has two subm
 - IO Watcher and Down-sampler (watcher): this program watch local disk for new experiment generated data, which we call them experiment log. For every new log entry, the program upload the point cloud to a pre-defined object storage service. It also send metadata of experiment to backend
 - Service Backend: the backend receives metadata from watchers. It stores the metadata in a MongoDB database. The metadata is also fetched from backend module in training.
 
+Note: This toolkit is adapted from [UniFolding](https://github.com/xiaoxiaoxh/UniFolding).
 ## Get Started
 
 The datamanagement service is managed by Docker Compose. It is recommended to prepare a dedicated host for Serivece Backend Module and Database and high performance object storage service. You should configure the IO Watcher module on the machine where the Unifolding Controller is deployed. The IO Wathcer module should be able to reach out to Service Backend via network faster than 100Mbps (1Gbps connection is recommended).
