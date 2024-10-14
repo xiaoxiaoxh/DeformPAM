@@ -23,18 +23,24 @@
 
 ## Contents
 
-- [Introduction](#-introduction)
-    - [TL;DR: The key idea of DeformPAM](#%EF%B8%8F-tldr-the-key-idea-of-deformpam)
-    - [Motivation](#motivation)
-    - [Method](#method)
-    - [Tasks and Hardware Setup](#tasks-and-hardware-setup)
-- [Environment Setup](#%EF%B8%8F-environment-setup)
-  - [Learning Environment](#-learning-environment)
-  - [Real Environment](#-real-environment)
-  - [Miscs](#-miscs)
-- [Usage](#-usage)
-  - [Inference](#-inference)
-  - [Train Your Own Model](#-train-your-own-model)
+- [Contents](#contents)
+- [📄 Introduction](#-introduction)
+  - [Motivation](#motivation)
+  - [Method](#method)
+  - [Tasks and Hardware Setup](#tasks-and-hardware-setup)
+- [⚙️ Environment Setup](#️-environment-setup)
+  - [🧠 Learning Environment](#-learning-environment)
+    - [🔽 Pre-trained Models](#-pre-trained-models)
+  - [🤖 Real Environment](#-real-environment)
+    - [📷 Camera](#-camera)
+    - [🦾 Robot](#-robot)
+  - [📦 Miscs](#-miscs)
+    - [🔧 Tools](#-tools)
+- [📕 Usage](#-usage)
+  - [🔍 Inference](#-inference)
+  - [📚 Train Your Own Model](#-train-your-own-model)
+    - [Stage 1 (Supervised Learning)](#stage-1-supervised-learning)
+    - [Stage 2 (Preference Learning)](#stage-2-preference-learning)
 
 ## 📄 Introduction
 
