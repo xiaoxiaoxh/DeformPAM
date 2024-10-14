@@ -1,0 +1,3 @@
+_target_: third_party.file_camera.file_camera.FileCamera
+vis: False
+target_dir: '/home/xuehan/DeformPAM/log/captures/tshirt'

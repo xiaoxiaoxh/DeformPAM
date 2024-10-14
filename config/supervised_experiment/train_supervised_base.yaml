@@ -1,0 +1,94 @@
+rescale_nocs: &rescale_nocs True
+num_of_grasp_points: &num_of_grasp_points 16
+grasp_nocs_feat_size: &grasp_nocs_feat_size 240
+
+datamodule:
+  h5_path: /mnt/homes/wendi/data/DeformPAM/vr_imitation_flattening-folding-short_v7_dataset/Tshirt/data.h5
+  intrinsic_name: camera_intrinsic_scanner_v2.json
+  batch_size: 32
+  num_workers: 8
+  # hyper-params
+  num_pc_sample: 20000
+  num_pc_sample_final: 4000
+  num_rotations: 10
+  sigma: 0.025
+  delta_coverage_as_reward: True
+  use_tanh_reward: True
+  reward_alpha: 2.0
+  reward_beta: 1.0
+  voxel_size: 0.002
+  # augmentation
+  use_augmentation: True
+  normal_aug_types: [depth, affine]
+  fold_aug_types: [depth, affine]
+  fling_aug_types: [depth, flip, affine, random_permute]
+  depth_scale_range: [0.1, 1.0]
+  max_depth_offset: 0.03
+  max_normal_rot_angle: 20
+  max_fold_rot_angle: 20
+  max_fling_rot_angle: 180
+  use_zero_center: True
+  rescale_nocs: *rescale_nocs
+  # datamodule config
+  dataset_split: [8,1,1]
+  split_seed: 0
+
+runtime_datamodule: null
+
+model:
+  sparse_unet3d_encoder_params:
+    in_channels: 3
+    out_channels: 64
+    conv1_kernel_size: 5
+    normalize_feature: True
+    CHANNELS: [None, 64, 64, 128, 256]
+    TR_CHANNELS: [None, 64, 64, 64, 128]
+  transformer_params:
+    input_channels: 3
+    use_xyz: True
+    input_size: 4000
+    d_model: 64
+    num_layers: 2
+    num_heads: 1
+    key_feature_dim: 64
+    with_pos_embed: True
+    encoder_pos_embed_input_dim: 3
+    fea_channels: [64, 128, 128]
+  state_head_params:
+    global_nn_channels: [128, 256, 1024]
+    cls_base_nn_channels: [1024, 256, 128]
+    pointnet_channels: [3, 64, 128, 512]
+    grasp_nocs_feat_nn_channels: [1728, 512, *grasp_nocs_feat_size]
+    nocs_nn_channels: [128, 256, 128, 3]
+    num_smoothing_style: 4   # (down, up, left, right)
+    min_gt_nocs_ratio: 0.7
+    gt_nocs_ratio_decay_factor: 0.98
+    num_pred_fling_candidates: *num_of_grasp_points
+    use_xyz_variety_loss: True
+    use_gt_nocs_pred_for_distance_weight: True
+    nocs_distance_weight_alpha: 25.0
+  diffusion_head_params:
+    weight_decay: 1e-3
+    prediction_type: sample
+    data_format: nocs
+    adaptive_xyz: False
+    num_of_grasp_points: *num_of_grasp_points
+    num_diffusion_transformer_layers: 2
+    num_diffusion_transformer_heads: 4
+    action_input_mlp_nn_channels: [120, *grasp_nocs_feat_size]
+    action_output_mlp_nn_channels: [*grasp_nocs_feat_size, 120]
+  rescale_nocs: *rescale_nocs
+  use_virtual_reward_for_inference: False
+  loss_nocs_weight: 100.0
+  loss_cls_weight: 0.0
+  loss_diffusion_weight: 30.0
+  use_cos_lr: True
+  cos_t_max: 200
+trainer:
+  max_epochs: 200
+trainer_adjustment:
+  use_adaptive_episode: False
+logger:
+  experiment_name: Tshirt-short-action14-dataset-v7_hybrid_supervised
+  run_name: debug
+  tracking_uri: https://unifold.mlflow.robotflow.ai/

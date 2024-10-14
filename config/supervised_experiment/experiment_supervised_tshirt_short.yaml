@@ -1,0 +1,25 @@
+defaults:
+  - experiment_supervised_base@_here_
+  - camera_param: mechmind_camera
+  - ../rules/folding_rule@_here_
+  - ../rules/drag_rule@_here_
+  - _self_
+
+experiment:
+  compat:
+    camera:
+      camera_param: ${camera_param}
+    object_type: 'tshirt_short'
+    machine:
+      hybrid_drag:
+        x_distance_ratio: 0.3333 # for short-sleeve
+        y_distance_ratio: 0.3  # for short-sleeve
+  runtime_training_config_override:
+    virtual_datamodule:  # datamodule for virtual dataset used for self-supervised learning
+      tag: 'short_action14_8pts_supervised'  # for short-sleeve hybrid-training
+    logger:
+      experiment_name: Tshirt-short-action14-dataset-v7_real-hybrid_zero_center_supervised_v1
+  strategy:
+    random_lift_in_each_trial: True
+    check_grasp_failure_before_action: False
+    manually_randomize_in_each_trial: True

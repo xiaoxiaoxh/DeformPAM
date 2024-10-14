@@ -1,0 +1,42 @@
+defaults:
+  - experiment_supervised_base
+  - experiment_supervised_tshirt_short
+
+experiment:
+  compat:
+    object_type: 'rope'
+    segmentation:
+      classes: ["colorful strip"]
+      # classes: ["rope"]
+      box_threshold: 0.16
+      text_threshold: 0.16
+      valid_box_range: [340, 80, 1600, 1300] # filter large boxes
+      use_hsv_segmentation: True
+      hsv_bounds: [[50, 45, 30], [95, 150, 150]] # green
+    camera:
+      max_mask_area_ratio: 0.01 # avoid large mask
+    machine:
+      image_width_ratio_limits_for_reachability_det: [0.0, 1.0] # don't check reachability
+      x_lim_m: [ 0.26, 1.12 ] # [0.26, 1.2]
+      left_workspace_min_x: 0.62 # 0.62
+      right_workspace_min_x: 0.62 # 0.62
+      left_workspace_y_limits: [ -0.3, 0.6 ]
+      right_workspace_y_limits: [ -0.6, 0.3 ]
+      wiper_width: null # no grid
+  strategy:
+    random_lift_in_each_trial: False
+    check_grasp_failure_before_action: False
+    manually_randomize_in_each_trial: True
+    grasp_wiper_in_first_trial: False
+    open_gripper_on_abort: True
+
+inference:
+  args:
+    nearest_pick_override: True # make sure the pick point is on the rope
+    fling_override: False
+    single_pick_and_place_override: True
+    # straighten_and_place_override: True
+    action_type_override:
+      type: single_pick_and_place
+      # type: straighten_and_place
+    use_parallel_checker: false

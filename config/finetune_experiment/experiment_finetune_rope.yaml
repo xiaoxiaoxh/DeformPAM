@@ -1,0 +1,16 @@
+defaults:
+  - experiment_finetune_base
+  - ../supervised_experiment/experiment_supervised_rope.yaml@_here_
+  - camera_param: mechmind_camera
+  - _self_
+
+inference:
+  args:
+    single_pick_and_place_override: False
+    model:
+      manually_select_diffusion_action_pair_for_inference: True
+
+experiment:
+  compat:
+    camera:
+      camera_param: ${camera_param}

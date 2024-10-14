@@ -1,0 +1,19 @@
+defaults:
+  - train_supervised_base
+  - train_supervised_tshirt_short_real
+  - _self_
+
+runtime_datamodule:
+  max_normal_rot_angle: 180
+  max_fling_rot_angle: 180
+
+model:
+  enable_new_pipeline_supervised_classification_detection: True
+  state_head_params:
+    offset_nn_channels: [128, 256, 128, 1]
+    att_nn_channels: [128, 256, 128, 1]
+    detach_for_classifier: False
+    detach_for_detector: False
+
+trainer_adjustment:
+  use_adaptive_episode: False

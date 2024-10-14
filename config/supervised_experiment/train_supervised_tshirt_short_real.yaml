@@ -1,0 +1,105 @@
+grasp_nocs_feat_size: &grasp_nocs_feat_size 240
+num_pc_sample_final: &num_pc_sample_final 3500
+xy_normalize_factor: &xy_normalize_factor 1.75
+voxel_size: &voxel_size 0.0035 # 0.002 * xy_normalize_factor
+muitiple_poses: &muitiple_poses true
+
+defaults:
+  - train_supervised_base
+  - _self_
+
+logger:
+  experiment_name: Tshirt-short-action14-dataset-v7_hybrid_supervised_real
+
+datamodule:
+  num_pc_sample_final: *num_pc_sample_final
+
+runtime_datamodule:
+  debug: False
+  batch_size: 30
+  num_workers: 8
+  episode_range: [ 0, 100]
+  # data augmentation
+  use_augmentation: True
+  normal_aug_types: [ depth, affine ]
+  fling_aug_types: [ depth, flip, affine, random_permute ]
+  label_smoothing_value: 0.15
+  # do not flip left-right because the gt depends on the side
+  flip_lr_percent: 0.0
+  flip_ud_percent: 0.0
+  max_normal_rot_angle: 20
+  # do not rotate too much because the gt depends on the side
+  max_fling_rot_angle: 25 # 25
+  # normal augmentation ----------------
+  normal_x_trans_range: [ 0.0, 0.0 ] # [ -0.1, 0.1]
+  normal_y_trans_range: [ 0.0, 0.0 ] # [ -0.1, 0.1]
+  # we use the scaling factor to normalize the xy plane
+  normal_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  # -----------------------------------
+  # fling augmentation ----------------
+  fling_x_trans_range: [ 0.0, 0.0 ] # [ -0.2, 0.2 ]
+  fling_y_trans_range: [ 0.0, 0.0 ] # [ -0.15, 0.15 ]
+  # we use the scaling factor to normalize the xy plane
+  fling_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  # -----------------------------------
+  use_zero_center: True
+  use_ood_points_removal: True
+  # For real-data
+  # depth scaling is conducted in the affine augmentation
+  depth_scale_range: [ 1.0, 1.0] # [ 0.8, 1.2 ]
+  depth_trans_range: [ -0.02, 0.02]
+  # datamodule config
+  dataset_split: [ 8, 1, 1]
+  split_seed: 0
+  weighted_sampler:
+    enable: False # because we only collect one episode
+    mode: 'linear'
+    min_weight: 0.2
+    max_sample_num: 200
+  num_rankings_per_sample: 44  # 28 + 16 (pairs)
+  num_multiple_poses: 10
+  num_pc_sample_final: *num_pc_sample_final
+  voxel_size: *voxel_size
+  data_type: new_pipeline_supervised
+  return_multiple_poses: *muitiple_poses
+  auto_fill_multiple_poses: True
+  use_table_plane_correction: True
+  cache_data: False
+  # database config
+  use_database: True
+  log_api: "/v1/log_stream"
+  log_endpoint: "http://192.168.2.223:8080"
+  # oss config
+  use_oss: False
+  oss_endpoint: "oss.robotflow.ai"
+  oss_bucket_name: "unifolding"
+  # logging params
+  logging_dir: "/home/xuehan/DeformPAM/log"
+  namespace: experiment_supervised
+  tag: "debug"
+  namespace_extra: null
+  tag_extra: null
+
+model:
+  state_head_params:
+    grasp_nocs_feat_nn_channels: [1152, 512, *grasp_nocs_feat_size]
+    use_nocs_for_dense_feat: False
+    detach_for_classifier: False
+    detach_for_detector: False
+  diffusion_head_params:
+    data_format: xyz
+    match_idx: [0, 1, 2] # remember to change this when changing the data format
+    prediction_type: 'epsilon'
+  transformer_params:
+    input_size: *num_pc_sample_final
+  use_multiple_poses: *muitiple_poses
+  use_minsnr_reweight: False
+  use_matched_action_gt: False
+  loss_nocs_weight: 0.0
+  loss_cls_weight: 0.0
+  loss_keypoint_weight: 0.0
+  loss_diffusion_weight: 1.0
+  init_lr: 1e-4
+
+trainer_adjustment:
+  use_adaptive_episode: True

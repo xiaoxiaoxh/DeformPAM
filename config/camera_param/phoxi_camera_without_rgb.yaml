@@ -1,0 +1,5 @@
+_target_: third_party.phoxi.phoxi_camera.PhoxiCamera
+vis: False
+dev_id: '2020-12-039-LC3'
+use_external_camera: True
+external_calibration_path: 'external_camera_calibration.txt'

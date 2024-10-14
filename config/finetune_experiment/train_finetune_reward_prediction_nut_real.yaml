@@ -1,0 +1,28 @@
+defaults:
+  - train_finetune_base
+  - ../supervised_experiment/train_supervised_nut_real.yaml@_here_
+  - _self_
+
+runtime_datamodule:
+  data_type: new_pipeline_finetune
+  batch_size: 28
+
+model:
+  # do not enable finetune loss
+  loss_diffusion_finetune_weight: 0.0
+  finetune_loss_type: null
+  dpo_beta: 100
+  cpl_lambda: 1.0
+  init_lr: 1e-5
+  use_sft_for_equal_samples: False
+  loss_diffusion_finetune_sft_euqal_weight: 1.0
+  use_sft_for_gt_data: False
+  loss_diffusion_finetune_sft_weight: 1.0
+  # enable reward prediction
+  loss_reward_prediction_weight: 1.0
+  enable_new_pipeline_reward_prediction: True
+  reward_prediction_head_params:
+    feature_dim: 240
+
+trainer_adjustment:
+  use_adaptive_episode: False

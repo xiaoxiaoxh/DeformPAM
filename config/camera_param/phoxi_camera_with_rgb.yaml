@@ -1,0 +1,5 @@
+_target_: third_party.phoxi.phoxi_camera.PhoXiCamera
+vis: False
+dev_id: 'DVJ-086'  # '2020-12-039-LC3'
+use_external_camera: False
+

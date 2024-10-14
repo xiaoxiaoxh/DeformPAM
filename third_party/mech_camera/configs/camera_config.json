@@ -1,0 +1,66 @@
+{
+    "configs": [
+        {
+            "DepthRange": [
+                1400,
+                1600
+            ],
+            "DistortionCorrection": 0,
+            "EnableDistortionCorrection": false,
+            "FringeCodingMethod": 2,
+            "FringeContrastThreshold": 3,
+            "FringeMinThreshold": 1,
+            "GenicamScan3dCoordinateTransformEnable": false,
+            "GenicamScan3dTransformValueRotationX": 0,
+            "GenicamScan3dTransformValueRotationY": 0,
+            "GenicamScan3dTransformValueRotationZ": 0,
+            "GenicamScan3dTransformValueTranslationX": 0,
+            "GenicamScan3dTransformValueTranslationY": 0,
+            "GenicamScan3dTransformValueTranslationZ": 0,
+            "LaserFrameAmplitude": 100,
+            "LaserFrameOffset": 0,
+            "LaserFramePartitionCount": 1,
+            "LaserFringeCodingMode": 0,
+            "LaserPowerLevel": 100,
+            "PointCloudEdgePreservation": 0,
+            "PointCloudGapFilling": 0,
+            "PointCloudNoiseRemoval": 0,
+            "PointCloudOutlierRemoval": 0,
+            "PointCloudSurfaceSmoothing": 0,
+            "ProjectorSelectionMode": 1,
+            "ProjectorSelector": 0,
+            "Scan2DExpectedGrayValue": 100,
+            "Scan2DExposureMode": 0,
+            "Scan2DExposureTime": 30,
+            "Scan2DHDRExposureSequence": "30ms",
+            "Scan2DPatternRoleExposureMode": 0,
+            "Scan2DPatternRoleExposureTime": 5,
+            "Scan2DROI": {
+                "Height": 0,
+                "Width": 0,
+                "X": 0,
+                "Y": 0
+            },
+            "Scan2DSharpenFactor": 0,
+            "Scan2DTextureRoleExposureMode": 0,
+            "Scan2DToneMappingEnable": false,
+            "Scan3D10BitEnable": false,
+            "Scan3DBinningEnable": false,
+            "Scan3DExposureCount": 1,
+            "Scan3DExposureTime": 4,
+            "Scan3DExposureTime2": 32,
+            "Scan3DExposureTime3": 96,
+            "Scan3DGain": 0,
+            "Scan3DROI": {
+                "Height": 0,
+                "Width": 0,
+                "X": 0,
+                "Y": 0
+            },
+            "UnsavedProperties": [
+            ],
+            "objectName": "calib"
+        }
+    ],
+    "current_idx": 0
+}

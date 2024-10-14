@@ -1,0 +1,6 @@
+defaults:
+  - ../supervised_experiment/train_supervised_base.yaml@_here_
+  - _self_
+
+model:
+  enable_new_pipeline_finetune: True

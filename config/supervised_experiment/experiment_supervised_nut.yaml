@@ -1,0 +1,34 @@
+defaults:
+  - experiment_supervised_base
+  - experiment_supervised_tshirt_short
+
+experiment:
+  compat:
+    object_type: 'nut'
+    segmentation:
+      classes: ["nuts"]
+    # camera:
+    #   max_mask_area_ratio: 0.6 # don't check operability
+    machine:
+      image_width_ratio_limits_for_reachability_det: [0.0, 1.0] # don't check reachability
+      x_lim_m: [0.26, 1.12] # [0.26, 1.2]
+      left_workspace_min_x: 0.82 # 0.62
+      right_workspace_min_x: 0.82 # 0.62
+      left_workspace_y_limits: [-0.3, 0.6]
+      right_workspace_y_limits: [-0.6, 0.3]
+      wiper_width: 0.1
+      wiper_delta_length: 0.04
+  strategy:
+    random_lift_in_each_trial: False
+    check_grasp_failure_before_action: False
+    manually_randomize_in_each_trial: True
+    grasp_wiper_in_first_trial: True
+    open_gripper_on_abort: False
+
+inference:
+  args:
+    fling_override: False
+    sweep_override: True
+    action_type_override:
+      type: sweep
+    use_parallel_checker: false

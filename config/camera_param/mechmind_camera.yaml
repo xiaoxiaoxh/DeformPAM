@@ -1,0 +1,4 @@
+_target_: third_party.mech_camera.mechmind_camera_wrapper.MechMindCameraWrapper
+vis: False
+dev_id: 'WAA15242B4030003'
+config_path: 'third_party/mech_camera/configs/camera_config.json'  # relative to project root path

@@ -1,0 +1,36 @@
+xy_normalize_factor: &xy_normalize_factor 3.0
+num_pc_sample_final: &num_pc_sample_final 3000
+voxel_size: &voxel_size 0.006 # 0.002 * xy_normalize_factor
+num_gripper_points: &num_gripper_points 2
+
+defaults:
+  - train_supervised_base
+  - train_supervised_tshirt_short_real
+  - _self_
+
+datamodule:
+  num_pc_sample_final: *num_pc_sample_final
+
+runtime_datamodule:
+  # we use the scaling factor to normalize the xy plane
+  normal_trans_place_pose: True
+  fling_trans_place_pose: True
+  normal_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  fling_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  num_pc_sample_final: *num_pc_sample_final
+  voxel_size: *voxel_size
+  valid_primitive: ['sweep']
+
+model:
+  valid_primitive_idx: 14 # 14 is the idx of sweep
+  gripper_points_idx: [0, 1] # left pick and left place
+  num_gripper_points: *num_gripper_points
+  use_sym_loss: False
+  transformer_params:
+    input_size: *num_pc_sample_final
+  diffusion_head_params:
+    num_gripper_points: *num_gripper_points
+    use_positional_encoding_in_attention_net: True
+  
+trainer_adjustment:
+  use_adaptive_episode: True

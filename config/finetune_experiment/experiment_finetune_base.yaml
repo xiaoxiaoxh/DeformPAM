@@ -1,0 +1,17 @@
+defaults:
+  - ../supervised_experiment/experiment_supervised_base.yaml@_here_
+  - _self_
+
+inference:
+  args:
+    model:
+      diffusion_head_params:
+        scheduler_type: ddim
+        num_inference_steps: 10
+        ddim_eta: 0.0
+
+logging:
+  namespace: experiment_finetune
+
+model:
+  enable_new_pipeline_finetune: True

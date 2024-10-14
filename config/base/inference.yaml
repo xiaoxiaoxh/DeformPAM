@@ -1,0 +1,39 @@
+inference:
+  model_path: null  # override this by yourself, e.g. outputs/outputs_action_v7_long
+  classification_detection_model_path: null
+  model_version: v7
+  model_name: last
+  remote_debug:
+    enable: false
+    endpoint: http://127.0.0.1:8085
+
+  args:
+    debug: False
+    smoothed_cls_thr: 0.5  # 0.1 by default, 0.0001 for very bad models
+    keypoint_parallel_thr: 15 # in degree
+    vis_action: False  # visualize predicted action
+    vis_all_fling_pred: False # Visualize all predicted grasp points of fling action
+    vis_pred_order: False # visualize all possible grasp-point candidates one by one in order
+    vis_pred_order_num: 8  # the number of K for visualizing top-K grasp-point candidates one by one in order
+    vis_err_actin: False  # visualize action with errors
+    fling_override: false  # manually pick grasp-points for fling action
+    pick_and_place_override: false  # manually pick grasp-points for pick-and-place action
+    fold1_override: false  # manually pick grasp-points for fold1 action
+    fold2_override: false  # manually pick grasp-points for fold2 action
+    only_success: false # true for smoothing style collection
+    only_smoothing: true  # false by default, set to true will only execute fling and pick_and_place action
+    enable_record: false # false by default, set to true will record a video for each trial
+    drag_for_best_fling_pick_pts: true # false by default, set to true will switch to drag if the best pick candidates of fling action is unreachable
+    drag_for_fold1: true # false by default, set to true will switch to hybrid drag if the pick points of fold1 action is unreachable
+    drag_for_fold2: true # false by default, set to true will switch to hybrid drag if the pick points of fold2 action is unreachable
+    action_type_override:  # override action type in inference
+      enable: false  # false by default
+      type: null
+    use_zero_center: true
+    manual_operation: 
+      enable: false
+      remote_args:
+        enable: false
+    use_parallel_checker: true
+    checker_processes_num: 16
+    use_learnt_keypoint_detector: true
