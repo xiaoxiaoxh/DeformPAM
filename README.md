@@ -5,8 +5,8 @@
 </h3>
 
 <p align="center">
-    <a href="https://andycwd.site">Wendi Chen</a><sup>1,*</sup>,
-    <a href="https://hanxue.me">Han Xue</a><sup>1,*</sup>,
+    <a href="https://github.com/ChenWendi2001">Wendi Chen</a><sup>1*</sup>,
+    <a href="https://hanxue.me">Han Xue</a><sup>1*</sup>,
     Fangyuan Zhou<sup>1</sup>,
     Yuan Fang<sup>1</sup>,
     <a href="https://www.mvig.org/">Cewu Lu</a><sup>1</sup>
@@ -17,8 +17,9 @@
 </p>
 
 <div align="center">
-<img alt="powered by Pytorch" src="https://img.shields.io/badge/PyTorch-❤️-F8C6B5?logo=pytorch&logoColor=white"> &nbsp;&nbsp;&nbsp;&nbsp;
-<a href='https://deform-pam.robotflow.ai'><img src='https://img.shields.io/website-up-down-green-red/http/cv.lbesson.qc.to.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='https://arxiv.org/abs/2410.11584'><img alt='arXiv' src='https://img.shields.io/badge/arXiv-2410.11584-red.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='https://deform-pam.robotflow.ai'><img alt='project website' src='https://img.shields.io/website-up-down-green-red/http/cv.lbesson.qc.to.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<img alt='powered by Pytorch' src='https://img.shields.io/badge/PyTorch-❤️-F8C6B5?logo=pytorch&logoColor=white'> &nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
 ## Contents
