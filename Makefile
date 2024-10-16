@@ -5,25 +5,24 @@ TASK_TYPE = tshirt_short
 # TASK_TYPE = rope
 TASK_VERSION = debug
 
-EXP_NAME_SUPERVISED = ${TASK_TYPE}-action14_real_zero_center_supervised_${TASK_VERSION}
-EXP_NAME_SUPERVISED_CLASSIFICATION_DETECTION = ${TASK_TYPE}-action14_real_zero_center_supervised_classification_detection_${TASK_VERSION}
+EXP_NAME_SUPERVISED = ${TASK_TYPE}-supervised_${TASK_VERSION}
+EXP_NAME_SUPERVISED_CLASSIFICATION_DETECTION = ${TASK_TYPE}-supervised_classification_detection_${TASK_VERSION}
 EXP_NAME_SUPERVISED_VR = Tshirt-short-action14-dataset-v7_real-hybrid_zero_center_supervised_vr
-EXP_NAME_SUPERVISED_DEBUG = ${TASK_TYPE}-action14_real_zero_center_supervised_debug
-EXP_NAME_FINETUNE = ${TASK_TYPE}-action14_real_zero_center_finetune_${TASK_VERSION}
-EXP_NAME_FINETUNE_REWARD_PREDICTION = ${TASK_TYPE}-action14_real_zero_center_finetune_reward_prediction_${TASK_VERSION}
-EXP_NAME_FINETUNE_DEBUG = ${TASK_TYPE}-action14_real_zero_center_finetune_debug
+EXP_NAME_SUPERVISED_DEBUG = ${TASK_TYPE}-supervised_debug
+EXP_NAME_FINETUNE = ${TASK_TYPE}-finetune_${TASK_VERSION}
+EXP_NAME_FINETUNE_REWARD_PREDICTION = ${TASK_TYPE}-finetune_reward_prediction_${TASK_VERSION}
+EXP_NAME_FINETUNE_DEBUG = ${TASK_TYPE}-finetune_debug
 EXP_NAME_NEW_PIPELINE_TEST = ${TASK_TYPE}-action14_test
 
-LOGGING_TAG_SUPERVISED = ${TASK_TYPE}_action14_real_zero_center_supervised_${TASK_VERSION}
-LOGGING_TAG_SUPERVISED_CLASSIFICATION_DETECTION = ${TASK_TYPE}_action14_real_zero_center_supervised_classification_detection_${TASK_VERSION}
-LOGGING_TAG_SUPERVISED_DEBUG = ${TASK_TYPE}_action14_real_zero_center_supervised_debug
-LOGGING_TAG_FINETUNE = ${TASK_TYPE}_action14_real_zero_center_finetune_${TASK_VERSION}
-LOGGING_TAG_FINETUNE_DEBUG = ${TASK_TYPE}_action14_real_zero_center_finetune_debug
-LOGGING_TAG_NEW_PIPELINE_TEST= ${TASK_TYPE}_action14_real_zero_center_new_pipeline_test
+LOGGING_TAG_SUPERVISED = ${TASK_TYPE}_supervised_${TASK_VERSION}
+LOGGING_TAG_SUPERVISED_CLASSIFICATION_DETECTION = ${TASK_TYPE}_supervised_classification_detection_${TASK_VERSION}
+LOGGING_TAG_SUPERVISED_DEBUG = ${TASK_TYPE}_supervised_debug
+LOGGING_TAG_FINETUNE = ${TASK_TYPE}_finetune_${TASK_VERSION}
+LOGGING_TAG_FINETUNE_DEBUG = ${TASK_TYPE}_finetune_debug
+LOGGING_TAG_TEST= ${TASK_TYPE}_test
 RAW_LOG_NAMESPACE_SUPERVISED = experiment_supervised
-RAW_LOG_NAMESPACE_SUPERVISED_CLASSIFICATION_DETECTION = experiment_supervised_classification_detection
 RAW_LOG_NAMESPACE_FINETUNE = experiment_finetune
-RAW_LOG_NAMESPACE_NEW_PIPELINE_TEST = experiment_new_pipeline_test
+RAW_LOG_NAMESPACE_TEST = experiment_test
 START_EPISODE = 0
 
 CONFIG_MVCAM_DEV = $(shell lsusb | grep MindVision | awk 'END { if (NR==0 || $$2=="") print "--"; else print "/dev/bus/usb/"$$2"/"$$4;}' | head -c -2)  #/dev/bus/usb/002/002
@@ -230,8 +229,8 @@ test_real: manipulation.prerun
         experiment.compat.calibration_path=${CALIBRATION_PATH} \
         experiment.compat.only_capture_pcd_before_action=False \
         camera_param=${CAMERA_PARAM} \
-        logging.namespace=${RAW_LOG_NAMESPACE_NEW_PIPELINE_TEST} \
-        logging.tag=${LOGGING_TAG_NEW_PIPELINE_TEST} \
+        logging.namespace=${RAW_LOG_NAMESPACE_TEST} \
+        logging.tag=${LOGGING_TAG_TEST} \
         inference.model_path=${TEST_MODEL_CKPT_PATH} \
         inference.args.vis_action=True \
         inference.args.vis_all_fling_pred=True \
