@@ -42,6 +42,7 @@
   - [📚 Train Your Own Model](#-train-your-own-model)
     - [Stage 1 (Supervised Learning)](#stage-1-supervised-learning)
     - [Stage 2 (Preference Learning)](#stage-2-preference-learning)
+- [🙏 Acknowlegement](#-acknowlegement)
 
 ## 📄 Introduction
 
@@ -127,7 +128,7 @@ Please refer to [tools/data_management/README.md](tools/data_management/README.m
 
 ### 🔍 Inference
 
-You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L47), and [`TEST_MODEL_CKPT_PATH`](Makefile#L48) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment.
+You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment.
 
 ```bash
 make test_real
@@ -150,7 +151,7 @@ make supervised.train_real
 ```
 
 #### Stage 2 (Preference Learning)
-Settup the `SUPERVISED_MODEL_CKPT_PATH` in [Makefile](Makefile) to the path of the trained model in stage 1. Then run the following commands:
+Settup the [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46) in [Makefile](Makefile) to the path of the trained model in stage 1. Then run the following commands:
 ```bash
 # Stage 2.1: collect on-policy data
 make finetune.run_real
