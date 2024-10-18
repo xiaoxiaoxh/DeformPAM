@@ -12,7 +12,7 @@ EXP_NAME_SUPERVISED_DEBUG = ${TASK_TYPE}-supervised_debug
 EXP_NAME_FINETUNE = ${TASK_TYPE}-finetune_${TASK_VERSION}
 EXP_NAME_FINETUNE_REWARD_PREDICTION = ${TASK_TYPE}-finetune_reward_prediction_${TASK_VERSION}
 EXP_NAME_FINETUNE_DEBUG = ${TASK_TYPE}-finetune_debug
-EXP_NAME_NEW_PIPELINE_TEST = ${TASK_TYPE}-action14_test
+EXP_NAME_TEST = ${TASK_TYPE}-action14_test
 
 LOGGING_TAG_SUPERVISED = ${TASK_TYPE}_supervised_${TASK_VERSION}
 LOGGING_TAG_SUPERVISED_CLASSIFICATION_DETECTION = ${TASK_TYPE}_supervised_classification_detection_${TASK_VERSION}
@@ -35,7 +35,7 @@ ROBOT_RIGHT_CLIENT_PATH = /home/xuehan/2.10.9_flexiv_elements/FlexivElements_v2.
 DISPLAY_PORT = 12000
 ANNO_PORT = 13240
 MULTI_POSE_NUM = 10
-NEW_PIPELINE_COMPARE_K = 16
+COMPARE_K = 16
 INFERENCE_POINT_NUM = 16
 KEYPOINT_NUM = 4
 
@@ -70,7 +70,7 @@ test_experiment: manipulation.prerun
 # only real data collection (no training)
 supervised.run_real: manipulation.prerun
 	python \
-        run_new_pipeline.py --config-name experiment_supervised_${TASK_TYPE}.yaml \
+        run.py --config-name experiment_supervised_${TASK_TYPE}.yaml \
         hydra.job.chdir=True \
         experiment.runtime_training_config_override.logger.experiment_name=${EXP_NAME_SUPERVISED} \
         experiment.strategy.skip_all_errors=True \
@@ -114,7 +114,7 @@ supervised.train_vr:
 
 # supervised training using real data
 supervised.train_real:
-	python train_new_pipeline.py --config-name train_supervised_${TASK_TYPE}_real.yaml \
+	python train.py --config-name train_supervised_${TASK_TYPE}_real.yaml \
 		hydra.job.chdir=True \
 		logger.experiment_name=${EXP_NAME_SUPERVISED} \
 		logger.run_name=action14_supervised_real \
@@ -124,7 +124,7 @@ supervised.train_real:
 
 #  test sampling
 test_model:
-	python test_new_pipeline.py \
+	python test.py \
 		--config-path outputs/2024-03-23/23-17-41 \
 		hydra.job.chdir=True \
 		+save_bson=True \
@@ -135,7 +135,7 @@ test_model:
 # only real data collection (no training)
 finetune.run_real: manipulation.prerun
 	python \
-        run_new_pipeline.py --config-path config/finetune_experiment \
+        run.py --config-path config/finetune_experiment \
         --config-name experiment_finetune_${TASK_TYPE}.yaml \
         hydra.job.chdir=True \
         experiment.runtime_training_config_override.logger.experiment_name=${EXP_NAME_FINETUNE} \
@@ -172,31 +172,31 @@ scripts.run_finetune_sort_annotation:
                 --object_type ${TASK_TYPE} \
                 --annotation_type new_pipeline_finetune_sort \
                 --multi_pose_num ${MULTI_POSE_NUM} \
-                --K ${NEW_PIPELINE_COMPARE_K} \
+                --K ${COMPARE_K} \
                 --keypoint_num ${KEYPOINT_NUM}
 
 # finetuning using real data
 finetune.train_real:
-	python train_new_pipeline.py --config-path config/finetune_experiment \
+	python train.py --config-path config/finetune_experiment \
                 --config-name train_finetune_${TASK_TYPE}_real.yaml \
 		hydra.job.chdir=True \
 		logger.experiment_name=${EXP_NAME_FINETUNE} \
 		logger.run_name=action14_finetune_real \
                 runtime_datamodule.namespace=${RAW_LOG_NAMESPACE_FINETUNE} \
                 runtime_datamodule.tag=${LOGGING_TAG_FINETUNE} \
-                +runtime_datamodule.manual_num_rankings_per_sample=${NEW_PIPELINE_COMPARE_K} \
+                +runtime_datamodule.manual_num_rankings_per_sample=${COMPARE_K} \
                 +model.reference_model_path=SUPERVISED_MODEL_CKPT_PATH \
 
 # finetuning using real data with reward prediction
 finetune.train_real_reward_prediction:
-	python train_new_pipeline.py --config-path config/finetune_experiment \
+	python train.py --config-path config/finetune_experiment \
                 --config-name train_finetune_reward_prediction_${TASK_TYPE}_real.yaml \
 		hydra.job.chdir=True \
 		logger.experiment_name=${EXP_NAME_FINETUNE_REWARD_PREDICTION} \
 		logger.run_name=action14_finetune_real \
                 runtime_datamodule.namespace=${RAW_LOG_NAMESPACE_FINETUNE} \
                 runtime_datamodule.tag=${LOGGING_TAG_FINETUNE} \
-                +runtime_datamodule.manual_num_rankings_per_sample=${NEW_PIPELINE_COMPARE_K} \
+                +runtime_datamodule.manual_num_rankings_per_sample=${COMPARE_K} \
                 +model.reference_model_path=SUPERVISED_MODEL_CKPT_PATH \
 
 STEP_NUM_PER_TRIAL = $(shell if [ ${TASK_TYPE} = "tshirt_short" ]; then echo 10; \
@@ -217,10 +217,10 @@ DDIM_ETA = $(shell if [ ${TASK_TYPE} = "tshirt_short" ]; then echo 0.0; \
 # only real data collection (no training)
 test_real: manipulation.prerun
 	python \
-        run_new_pipeline.py --config-path config/finetune_experiment \
+        run.py --config-path config/finetune_experiment \
         --config-name experiment_finetune_${TASK_TYPE}.yaml \
         hydra.job.chdir=True \
-        experiment.runtime_training_config_override.logger.experiment_name=${EXP_NAME_NEW_PIPELINE_TEST} \
+        experiment.runtime_training_config_override.logger.experiment_name=${EXP_NAME_TEST} \
         experiment.strategy.skip_all_errors=True \
         experiment.strategy.start_episode=0 \
 		experiment.strategy.step_num_per_trial=${STEP_NUM_PER_TRIAL} \
@@ -272,7 +272,7 @@ scripts.check_annotation:
 	export PYTHONPATH=$$PYTHONPATH:$(shell pwd); \
         python ./tools/run_annotation --exam_mode \
                 --multi_pose_num ${MULTI_POSE_NUM} \
-                --K ${NEW_PIPELINE_COMPARE_K} \
+                --K ${COMPARE_K} \
                 --keypoint_num ${KEYPOINT_NUM}
 
 .PHONY: clean
