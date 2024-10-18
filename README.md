@@ -19,12 +19,16 @@
 <div align="center">
 <a href='https://arxiv.org/abs/2410.11584'><img alt='arXiv' src='https://img.shields.io/badge/arXiv-2410.11584-red.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <a href='https://deform-pam.robotflow.ai'><img alt='project website' src='https://img.shields.io/website-up-down-green-red/http/cv.lbesson.qc.to.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='https://huggingface.co/datasets/WendiChen/DeformPAM'><img alt='Hugging Face' src='https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=000'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <img alt='powered by Pytorch' src='https://img.shields.io/badge/PyTorch-❤️-F8C6B5?logo=pytorch&logoColor=white'> &nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
+## News
+- **2024.10**: We release the data of DeformPAM on Hugging Face.
+- **2024.10**: We release the code of DeformPAM.
+
 ## Contents
 
-- [Contents](#contents)
 - [📄 Introduction](#-introduction)
   - [Motivation](#motivation)
   - [Method](#method)
