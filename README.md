@@ -20,16 +20,19 @@
 <a href='https://arxiv.org/abs/2410.11584'><img alt='arXiv' src='https://img.shields.io/badge/arXiv-2410.11584-red.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <a href='https://deform-pam.robotflow.ai'><img alt='project website' src='https://img.shields.io/website-up-down-green-red/http/cv.lbesson.qc.to.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <a href='https://huggingface.co/datasets/WendiChen/DeformPAM'><img alt='Hugging Face' src='https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=000'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='https://drive.google.com/drive/folders/1G8Xe1nAwdZdKxN0e_cTOzcF63aQkxtN7?usp=sharing'><img alt='Google Drive' src='https://img.shields.io/badge/Google%20Drive-4285F4?logo=googledrive&logoColor=fff'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <img alt='powered by Pytorch' src='https://img.shields.io/badge/PyTorch-❤️-F8C6B5?logo=pytorch&logoColor=white'> &nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
 ## News
-- **2024.10**: We release the data of DeformPAM on Hugging Face.
+- **2024.10**: We release the pretrained models on Google Drive.
+- **2024.10**: We release the data on Hugging Face.
 - **2024.10**: We release the code of DeformPAM.
 
 ## Contents
 
 - [📄 Introduction](#-introduction)
+  - [Key Idea](#key-idea)
   - [Motivation](#motivation)
   - [Method](#method)
   - [Tasks and Hardware Setup](#tasks-and-hardware-setup)
@@ -47,8 +50,12 @@
     - [Stage 1 (Supervised Learning)](#stage-1-supervised-learning)
     - [Stage 2 (Preference Learning)](#stage-2-preference-learning)
 - [🙏 Acknowlegement](#-acknowlegement)
+- [🔗 Citation](#-citation)
 
 ## 📄 Introduction
+
+### Key Idea
+To quickly grasp the concept of DeformPAM, you may refer to [`predict()`](learning/net/primitive_diffusion.py#L1391) method in [learning.net.primitive_diffusion::PrimitiveDiffusion](learning/net/primitive_diffusion.py).
 
 ### Motivation
 
@@ -107,9 +114,6 @@ This script will automatically create an conda environment named `DeformPAM` and
 
 Finally, see [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for installation of Grounded-DINO and Segment-Anything.
 
-#### 🔽 Pre-trained Models
-We will release the pre-trained models soon. 
-
 ### 🤖 Real Environment
 
 #### 📷 Camera
@@ -132,7 +136,7 @@ Please refer to [tools/data_management/README.md](tools/data_management/README.m
 
 ### 🔍 Inference
 
-You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment.
+You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment. The pre-trained models can be downloaded from [![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?logo=googledrive&logoColor=fff)](https://drive.google.com/drive/folders/1G8Xe1nAwdZdKxN0e_cTOzcF63aQkxtN7?usp=sharing).
 
 ```bash
 make test_real
@@ -140,11 +144,12 @@ make test_real
 
 ### 📚 Train Your Own Model
 
-The training pipeline includes 2 stages, all wrapped as Makefie targets.
+The training pipeline includes 2 stages, all wrapped as Makefie targets. You can download the data from [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM) or collect your own data according to the following instructions.
 
 #### Stage 1 (Supervised Learning)
 
-Run the following commands:
+Set up the [`TASK_TYPE`](Makefile#L3) and [`TASK_VERSION`](Makefile#L6) in [Makefile](Makefile) and run the following commands:
+
 ```bash
 # Stage 1.1: collect supervised data
 make supervised.run_real
@@ -155,7 +160,8 @@ make supervised.train_real
 ```
 
 #### Stage 2 (Preference Learning)
-Settup the [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46) in [Makefile](Makefile) to the path of the trained model in stage 1. Then run the following commands:
+Set up the [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46) in [Makefile](Makefile) to the path of the trained model in stage 1. Then run the following commands:
+
 ```bash
 # Stage 2.1: collect on-policy data
 make finetune.run_real
@@ -167,4 +173,16 @@ make finetune.train_real
 
 ## 🙏 Acknowlegement
 
-- The data annotation tool and motion primitives used in our code is adapted from [UniFolding](https://github.com/xiaoxiaoxh/UniFolding).
+The data annotation tool and motion primitives used in our code is adapted from [UniFolding](https://github.com/xiaoxiaoxh/UniFolding).
+
+## 🔗 Citation
+If you find this work helpful, please consider citing:
+
+```bibtex
+@article{chen2024deformpam,
+  title     = {DeformPAM: Data-Efficient Learning for Long-horizon Deformable Object Manipulation via Preference-based Action Alignment},
+  author    = {Chen, Wendi and Xue, Han and Zhou, Fangyuan and Fang, Yuan and Lu, Cewu},
+  journal   = {arXiv preprint arXiv:2410.11584},
+  year      = {2024}
+}
+```
