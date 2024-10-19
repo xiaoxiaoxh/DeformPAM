@@ -112,8 +112,8 @@ class Inference3D:
                     logger.warning("manually select action pair is not enabled when randomly select action pair is disabled")
                     model_cpu.manually_select_diffusion_action_pair_for_inference = False
 
-            inference_point_num = getattr(args.model, 'inference_point_num', model_cpu.state_head.num_pred_fling_candidates)
-            model_cpu.state_head.num_pred_fling_candidates = inference_point_num
+            inference_point_num = getattr(args.model, 'inference_point_num', model_cpu.state_head.num_pred_candidates)
+            model_cpu.state_head.num_pred_candidates = inference_point_num
             model_cpu.diffusion_head.num_of_grasp_points = inference_point_num
 
         if 'diffusion' in model_version and hasattr(args, 'model') and hasattr(args.model, 'diffusion_head_params'):
@@ -1281,9 +1281,9 @@ class Inference3D:
             random_top_ratio = 0.
         if self.model.random_select_diffusion_action_pair_for_inference:
             use_random_pred = True
-            random_top_ratio = 1.0 / (self.model.state_head.num_pred_fling_candidates * 2)
+            random_top_ratio = 1.0 / (self.model.state_head.num_pred_candidates * 2)
         if self.model.use_dpo_reward_for_inference or self.model.use_reward_prediction_for_inference:
-            top_ratio = 1.0 / (self.model.state_head.num_pred_fling_candidates * 2)
+            top_ratio = 1.0 / (self.model.state_head.num_pred_candidates * 2)
         else:
             top_ratio = 1.0
         # iterate all possible actions (sorted by scores, large-f

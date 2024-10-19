@@ -364,7 +364,7 @@ class StateHead(pl.LightningModule):
                  num_keypoints: int = 4, # (left shoulder, right shoulder, left waist, right waist)
                  min_gt_nocs_ratio: float = 0.2,
                  gt_nocs_ratio_decay_factor: float = 0.98,  # for 100 epoch setting
-                 num_pred_fling_candidates: int = 4,  # number of possible fling candidates
+                 num_pred_candidates: int = 4,  # number of possible candidates
                  use_xyz_variety_loss: bool = False,
                  use_gt_nocs_pred_for_distance_weight: bool = False,
                  nocs_distance_weight_alpha: float = 30.0,
@@ -376,7 +376,7 @@ class StateHead(pl.LightningModule):
         self.save_hyperparameters()
 
         self.num_action_type = num_smoothing_style
-        self.num_pred_fling_candidates = num_pred_fling_candidates
+        self.num_pred_candidates = num_pred_candidates
         self.num_keypoints = num_keypoints
 
         self.nocs_pointnet = MiniPointNetfeat(nn_channels=pointnet_channels)
@@ -514,7 +514,7 @@ class PrimitiveDiffusion(pl.LightningModule):
     Use Res-UNet3D as backbone, use Point cloud as input
     use Transformer to encode dense per-point feature
     use attention + offset to predict grasp points and release points
-    predict K independent grasp-points in NOCS space  for fling action, use variety loss (nocs) for supervision
+    predict K grasp-points for each action
     factorized reward prediction
     """
     def __init__(self,
@@ -692,7 +692,7 @@ class PrimitiveDiffusion(pl.LightningModule):
         self.reference_model.dpo_reward_sample_num = self.dpo_reward_sample_num
 
         self.reference_model.diffusion_head.num_of_grasp_points = self.diffusion_head.num_of_grasp_points
-        self.reference_model.state_head.num_pred_fling_candidates = self.state_head.num_pred_fling_candidates
+        self.reference_model.state_head.num_pred_candidates = self.state_head.num_pred_candidates
 
         self.reference_model.diffusion_head.scheduler_type = self.diffusion_head.scheduler_type
         self.reference_model.diffusion_head.num_inference_steps = self.diffusion_head.num_inference_steps
@@ -743,7 +743,7 @@ class PrimitiveDiffusion(pl.LightningModule):
                                          pc_xyz, xyz_target, nocs_target, weights=None,
                                          use_xyz_variety_loss=False, alpha=30.0):
         """
-
+        only used for validate the training process
         :param pred_grasp_nocs:  (B, K, 3)
         :param pred_grasp_score: (B, K)
         :param pred_pc_nocs: (B, N, 3)
@@ -1012,7 +1012,7 @@ class PrimitiveDiffusion(pl.LightningModule):
         dense_feat_att, pred_nocs, use_gt_nocs, dense_nocs_feat_fuse, smoothed_logits, smoothing_style_logits, keypoints = \
             model.forward(coords, feat, pc_xyz, gt_pc_nocs=pc_nocs)
     
-        fling_action_gt, fling_action_pred, fling_action_xyz_pred, fling_action_nocs_pred, timesteps, noise = self.diffusion_head.diffuse_denoise(
+        action_gt, action_pred, action_xyz_pred, action_nocs_pred, timesteps, noise = self.diffusion_head.diffuse_denoise(
             action_xyz_gt=action_xyz_gt,
             action_nocs_gt=action_nocs_gt,
             context=dense_nocs_feat_fuse,
@@ -1024,7 +1024,7 @@ class PrimitiveDiffusion(pl.LightningModule):
             replicate_action=False
         )
         
-        return fling_action_gt, fling_action_pred, timesteps, noise
+        return action_gt, action_pred, timesteps, noise
         
     def forward_finetune_loss(self, input_batch: tuple):
         coords, feat, pc_xyz, pc_nocs, gripper_points, grasp_points_nocs, rotation_cls, \
@@ -1044,12 +1044,12 @@ class PrimitiveDiffusion(pl.LightningModule):
             B, _, _, D = action_nocs_gt.shape
             action_nocs_gt = action_nocs_gt.reshape(B, -1, D)
             
-            fling_action_gt, fling_action_pred, timesteps, noise = self.get_diffusion_prediction_from_model(
+            action_gt, action_pred, timesteps, noise = self.get_diffusion_prediction_from_model(
                 self, coords, feat, pc_xyz, pc_nocs, action_xyz_gt, action_nocs_gt
             )
-            B, K, D = fling_action_gt.shape
-            fling_action_gt = fling_action_gt.reshape(B, K//self.num_gripper_points, self.num_gripper_points, D)
-            fling_action_pred = fling_action_pred.reshape(B, K//self.num_gripper_points, self.num_gripper_points, D)
+            B, K, D = action_gt.shape
+            action_gt = action_gt.reshape(B, K//self.num_gripper_points, self.num_gripper_points, D)
+            action_pred = action_pred.reshape(B, K//self.num_gripper_points, self.num_gripper_points, D)
             
             if self.use_minsnr_reweight:
                 minsnr_weights = self.diffusion_head.get_minsnr_weights(timesteps)
@@ -1057,22 +1057,22 @@ class PrimitiveDiffusion(pl.LightningModule):
                 minsnr_weights = None
             
             if self.finetune_loss_type == 'dpo':
-                _, fling_action_pred_reference, timesteps, noise = self.get_diffusion_prediction_from_model(
+                _, action_pred_reference, timesteps, noise = self.get_diffusion_prediction_from_model(
                     self.reference_model, coords, feat, pc_xyz, pc_nocs, action_xyz_gt, action_nocs_gt, given_timesteps=timesteps, given_noise=noise
                 )
-                fling_action_pred_reference = fling_action_pred_reference.reshape(B, K//self.num_gripper_points, self.num_gripper_points, D)
+                action_pred_reference = action_pred_reference.reshape(B, K//self.num_gripper_points, self.num_gripper_points, D)
                 
-                loss_diffusion_finetune, loss_diffusion_finetune_weighted, loss_sft_equal, loss_sft_equal_weighted = self.diffusion_dpo_loss(fling_action_gt,
-                                                                                                                            fling_action_pred,
-                                                                                                                            fling_action_pred_reference,
+                loss_diffusion_finetune, loss_diffusion_finetune_weighted, loss_sft_equal, loss_sft_equal_weighted = self.diffusion_dpo_loss(action_gt,
+                                                                                                                            action_pred,
+                                                                                                                            action_pred_reference,
                                                                                                                             rankings,
                                                                                                                             weights=weights,
                                                                                                                             minsnr_weights=minsnr_weights,
                                                                                                                             beta=self.dpo_beta)        
 
             elif self.finetune_loss_type == 'cpl':
-                loss_diffusion_finetune, loss_diffusion_finetune_weighted, loss_sft_equal, loss_sft_equal_weighted = self.diffusion_cpl_loss(fling_action_gt,
-                                                                                                                                fling_action_pred,
+                loss_diffusion_finetune, loss_diffusion_finetune_weighted, loss_sft_equal, loss_sft_equal_weighted = self.diffusion_cpl_loss(action_gt,
+                                                                                                                                action_pred,
                                                                                                                                 rankings,
                                                                                                                                 weights=weights,
                                                                                                                                 minsnr_weights=minsnr_weights,
@@ -1084,7 +1084,7 @@ class PrimitiveDiffusion(pl.LightningModule):
             # pcd = o3d.geometry.PointCloud()
             # pcd.points = o3d.utility.Vector3dVector(pc_xyz[0].detach().cpu().numpy())
             # geometries.append(pcd)
-            # grasp_points = fling_action_gt[0].detach().cpu().numpy()
+            # grasp_points = action_gt[0].detach().cpu().numpy()
             # grasp_points = grasp_points.reshape(-1, 3)
             # for i in range(2):
             #     pcd = o3d.geometry.TriangleMesh.create_sphere(radius=0.02)
@@ -1114,7 +1114,7 @@ class PrimitiveDiffusion(pl.LightningModule):
             dense_feat_att, pred_nocs, use_gt_nocs, dense_nocs_feat_fuse, smoothed_logits, smoothing_style_logits, keypoints = \
             self.forward(coords, feat, pc_xyz, gt_pc_nocs=pc_nocs)
             
-            fling_action_gt, fling_action_pred, fling_action_xyz_pred, fling_action_nocs_pred, timesteps, noise = self.diffusion_head.diffuse_denoise(
+            action_gt, action_pred, action_xyz_pred, action_nocs_pred, timesteps, noise = self.diffusion_head.diffuse_denoise(
                 action_xyz_gt=gripper_points[:, self.gripper_points_idx, :],
                 action_nocs_gt=grasp_points_nocs,
                 context=dense_nocs_feat_fuse,
@@ -1128,9 +1128,9 @@ class PrimitiveDiffusion(pl.LightningModule):
             else:
                 minsnr_weights = None
             if self.diffusion_head.noise_scheduler.config.prediction_type == 'sample':
-                loss_sft, loss_sft_weighted = self.sym_diffusion_mse_loss(fling_action_gt, fling_action_pred, weights=weights, minsnr_weights=minsnr_weights, use_sym_loss=self.use_sym_loss)
+                loss_sft, loss_sft_weighted = self.sym_diffusion_mse_loss(action_gt, action_pred, weights=weights, minsnr_weights=minsnr_weights, use_sym_loss=self.use_sym_loss)
             else:
-                loss_sft, loss_sft_weighted = self.epsilon_diffusion_mse_loss(fling_action_gt, fling_action_pred, weights=weights, minsnr_weights=minsnr_weights)
+                loss_sft, loss_sft_weighted = self.epsilon_diffusion_mse_loss(action_gt, action_pred, weights=weights, minsnr_weights=minsnr_weights)
         else:
             loss_sft = None
             loss_sft_weighted = None
@@ -1255,12 +1255,12 @@ class PrimitiveDiffusion(pl.LightningModule):
         dense_feat_att, pred_nocs, use_gt_nocs, dense_nocs_feat_fuse, pred_smoothed_logits, pred_smoothing_style_logits, pred_keypoints = \
             self.forward(coords, feat, pc_xyz, gt_pc_nocs=pc_nocs)
 
-        # grasp loss for NOCS coordintes of grasp points for fling action
+        # ddpm loss for grasp points of each action
         batch_size = pc_xyz.shape[0]
         weights = torch.zeros(batch_size, device=self.device)  # (B, )
         weights[primitive_index_batch == self.valid_primitive_idx] = 1.0
         
-        fling_action_gt, fling_action_pred, fling_action_xyz_pred, fling_action_nocs_pred, timesteps, noise = self.diffusion_head.diffuse_denoise(
+        action_gt, action_pred, action_xyz_pred, action_nocs_pred, timesteps, noise = self.diffusion_head.diffuse_denoise(
             action_xyz_gt=gripper_points[:, self.gripper_points_idx, :],
             action_nocs_gt=grasp_points_nocs,
             context=dense_nocs_feat_fuse,
@@ -1276,9 +1276,9 @@ class PrimitiveDiffusion(pl.LightningModule):
         else:
             minsnr_weights = None
         if self.diffusion_head.noise_scheduler.config.prediction_type == 'sample':
-            loss_diffusion, loss_diffusion_weighted = self.sym_diffusion_mse_loss(fling_action_gt, fling_action_pred, weights=weights, minsnr_weights=minsnr_weights, use_sym_loss=self.use_sym_loss)
+            loss_diffusion, loss_diffusion_weighted = self.sym_diffusion_mse_loss(action_gt, action_pred, weights=weights, minsnr_weights=minsnr_weights, use_sym_loss=self.use_sym_loss)
         else:
-            loss_diffusion, loss_diffusion_weighted = self.epsilon_diffusion_mse_loss(fling_action_gt, fling_action_pred, weights=weights, minsnr_weights=minsnr_weights)
+            loss_diffusion, loss_diffusion_weighted = self.epsilon_diffusion_mse_loss(action_gt, action_pred, weights=weights, minsnr_weights=minsnr_weights)
         loss_diffusion *= self.loss_diffusion_weight
         loss_diffusion_weighted *= self.loss_diffusion_weight
         if self.use_minsnr_reweight:
@@ -1287,7 +1287,7 @@ class PrimitiveDiffusion(pl.LightningModule):
             loss_diffusion_weighted = loss_diffusion_weighted.detach()
 
         err_grasp_variety_nocs, err_grasp_variety_xyz = \
-            self.sym_grasp_mse_variety_cls_err(fling_action_nocs_pred,
+            self.sym_grasp_mse_variety_cls_err(action_nocs_pred,
                                                   pc_nocs if use_gt_nocs else pred_nocs,
                                                   pc_xyz,
                                                   gripper_points[:, self.gripper_points_idx, :],
@@ -1315,8 +1315,8 @@ class PrimitiveDiffusion(pl.LightningModule):
         loss_dict = dict()
         loss_dict.update({'loss_diffusion': loss_diffusion,
                           'loss_diffusion_weighted': loss_diffusion_weighted,
-                          'err_fling_grasp_xyz': err_grasp_variety_xyz,
-                          'err_fling_grasp_nocs': err_grasp_variety_nocs,
+                          'err_grasp_xyz': err_grasp_variety_xyz,
+                          'err_grasp_nocs': err_grasp_variety_nocs,
                           'loss_nocs': loss_nocs,
                           'loss_smoothed': loss_smoothed,
                           'smoothed_accuracy': smoothed_accuracy,
@@ -1425,9 +1425,8 @@ class PrimitiveDiffusion(pl.LightningModule):
         virtual_reward_all = np.zeros((0, 0, 1)).astype(np.float32)
         real_reward_all = np.zeros((0, 0, 1)).astype(np.float32)
 
-        # always handle fling predictions for whatever action type
         num_pts = pred_nocs.shape[1]  # N
-        num_candidates = model.state_head.num_pred_fling_candidates  # K
+        num_candidates = model.state_head.num_pred_candidates  # K
 
         action_xyz, action_nocs, action_xyz_list = model.diffusion_head.conditional_sample(
             context=dense_nocs_feat_fuse,
@@ -1455,10 +1454,10 @@ class PrimitiveDiffusion(pl.LightningModule):
                 (pred_grasp_xyz.shape[0],),
                 device=coords.device
             ).long()
-            fling_action_gt, fling_action_pred, timesteps, noise = self.get_diffusion_prediction_from_model(
+            action_gt, action_pred, timesteps, noise = self.get_diffusion_prediction_from_model(
                 self, coords, feat, pc_xyz, pc_nocs, pred_grasp_xyz, pred_grasp_nocs, given_timesteps=timesteps
             )
-            _, fling_action_pred_reference, timesteps, noise = self.get_diffusion_prediction_from_model(
+            _, action_pred_reference, timesteps, noise = self.get_diffusion_prediction_from_model(
                 self.reference_model, coords, feat, pc_xyz, pc_nocs, pred_grasp_xyz, pred_grasp_nocs, given_timesteps=timesteps, given_noise=noise
             )
             if self.use_minsnr_reweight:
@@ -1467,14 +1466,14 @@ class PrimitiveDiffusion(pl.LightningModule):
             else:
                 minsnr_weights = torch.tensor(1.0)
             
-            B, K, D = fling_action_gt.shape
-            fling_action_gt = fling_action_gt.reshape(B, K//2, 2, D)
-            fling_action_pred = fling_action_pred.reshape(B, K//2, 2, D)
-            fling_action_pred_reference = fling_action_pred_reference.reshape(B, K//2, 2, D)
+            B, K, D = action_gt.shape
+            action_gt = action_gt.reshape(B, K//2, 2, D)
+            action_pred = action_pred.reshape(B, K//2, 2, D)
+            action_pred_reference = action_pred_reference.reshape(B, K//2, 2, D)
             
             metric = nn.MSELoss(reduction='none')
-            elbo = metric(fling_action_gt, fling_action_pred).mean(dim=(2, 3))
-            elbo_reference = metric(fling_action_gt, fling_action_pred_reference).mean(dim=(2, 3))
+            elbo = metric(action_gt, action_pred).mean(dim=(2, 3))
+            elbo_reference = metric(action_gt, action_pred_reference).mean(dim=(2, 3))
             reward = -self.dpo_beta * minsnr_weights * (elbo - elbo_reference)
             reward = reward.mean(dim=0)
             for k in range(num_candidates // 2):

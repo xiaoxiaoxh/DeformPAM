@@ -63,7 +63,7 @@ model:
     num_smoothing_style: 4   # (down, up, left, right)
     min_gt_nocs_ratio: 0.7
     gt_nocs_ratio_decay_factor: 0.98
-    num_pred_fling_candidates: *num_of_grasp_points
+    num_pred_candidates: *num_of_grasp_points
     use_xyz_variety_loss: True
     use_gt_nocs_pred_for_distance_weight: True
     nocs_distance_weight_alpha: 25.0

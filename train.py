@@ -44,7 +44,7 @@ def main(cfg: DictConfig) -> None:
                 cfg.runtime_datamodule.manual_num_rankings_per_sample + cfg.num_of_grasp_points // 2
             num_of_grasp_points = cfg.runtime_datamodule.num_rankings_per_sample * 4
             model.diffusion_head.num_of_grasp_points = num_of_grasp_points
-            model.state_head.num_pred_fling_candidates = num_of_grasp_points
+            model.state_head.num_pred_candidates = num_of_grasp_points
             
         datamodule = RuntimeDataModuleReal(**cfg.runtime_datamodule)
         # use augmentation to do normalization
