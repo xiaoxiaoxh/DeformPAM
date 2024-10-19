@@ -474,10 +474,10 @@ experiment:
       # data augmentation
       use_augmentation: True
       normal_aug_types: [ depth, affine ]
-      fling_aug_types: [ depth, flip, affine, random_permute ]
+      other_aug_types: [ depth, flip, affine, random_permute ]
       label_smoothing_value: 0.15
       max_normal_rot_angle: 20
-      max_fling_rot_angle: 25
+      max_other_rot_angle: 25
       use_zero_center: True
       # For real-data
       depth_scale_range: [ 0.8, 1.2 ]

@@ -18,7 +18,7 @@ import MinkowskiEngine as ME
 
 # data sets
 # =========
-class ImitationDataset5(Dataset):
+class ImitationDataset(Dataset):
     """Without heatmap, add grasp-point nocs"""
     def __init__(self,
                  # h5 path
@@ -26,13 +26,13 @@ class ImitationDataset5(Dataset):
                  # data augumentaiton
                  use_augmentation: bool = False,
                  normal_aug_types: tuple = ('depth', 'affine'),
-                 fling_aug_types: tuple = ('depth', 'flip', 'affine', 'random_permute'),
+                 other_aug_types: tuple = ('depth', 'flip', 'affine', 'random_permute'),
                  fold_aug_types: tuple = ('depth', 'affine'),
                  depth_scale_range: tuple = (0.2, 1.5),
                  max_depth_offset: float = 0.03,
                  max_normal_rot_angle: float = 20,
                  max_fold_rot_angle: float = 20,
-                 max_fling_rot_angle: float = 180,
+                 max_other_rot_angle: float = 180,
                  use_zero_center: bool = False,
                  rescale_nocs: bool = False,
                  # hyper-params
@@ -63,7 +63,7 @@ class ImitationDataset5(Dataset):
         # data augmentation
         self.use_augmentation = use_augmentation
         self.normal_aug_types = normal_aug_types
-        self.fling_aug_types = fling_aug_types
+        self.other_aug_types = other_aug_types
         self.fold_aug_types = fold_aug_types
         self.rescale_nocs = rescale_nocs
         # debug config
@@ -85,18 +85,18 @@ class ImitationDataset5(Dataset):
         self.transform_action_fling = None
         if use_augmentation:
             normal_aug_list = []
-            fling_aug_list = []
+            other_aug_list = []
             fold_aug_list = []
             if 'depth' in self.normal_aug_types:
                 normal_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, max_offset=max_depth_offset))
-            if 'depth' in self.fling_aug_types:
-                fling_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, max_offset=max_depth_offset))
+            if 'depth' in self.other_aug_types:
+                other_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, max_offset=max_depth_offset))
             if 'depth' in self.fold_aug_types:
                 fold_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, max_offset=max_depth_offset))
             assert 'flip' not in self.normal_aug_types, 'Do not support flip transforms for normal action!'
             assert 'flip' not in self.fold_aug_types, 'Do not support flip transforms for fold action!'
-            if 'flip' in self.fling_aug_types:
-                fling_aug_list.append(aug.FlipV3(lr_percent=0.5, ud_percent=0.25))
+            if 'flip' in self.other_aug_types:
+                other_aug_list.append(aug.FlipV3(lr_percent=0.5, ud_percent=0.25))
             if 'affine' in self.normal_aug_types:
                 normal_aug_list.append(aug.AffineV3(
                     x_trans_range=(-0.2, 0.2),
@@ -106,11 +106,11 @@ class ImitationDataset5(Dataset):
                     trans_place_pose=True,
                     use_zero_center=use_zero_center,
                 ))
-            if 'affine' in self.fling_aug_types:
-                fling_aug_list.append(aug.AffineV3(
+            if 'affine' in self.other_aug_types:
+                other_aug_list.append(aug.AffineV3(
                     x_trans_range=(-0.2, 0.2),
                     y_trans_range=(-0.15, 0.15),
-                    rot_angle_range=(-np.pi / 180 * max_fling_rot_angle, np.pi / 180 * max_fling_rot_angle),
+                    rot_angle_range=(-np.pi / 180 * max_other_rot_angle, np.pi / 180 * max_other_rot_angle),
                     scale_range=(0.8, 1.2),
                     trans_place_pose=False,
                     use_zero_center=use_zero_center,
@@ -127,14 +127,14 @@ class ImitationDataset5(Dataset):
 
             assert 'auto_permute' not in self.normal_aug_types, 'Do not support AutoPermutePose for normal actions!'
             assert 'auto_permute' not in self.fold_aug_types, 'Do not support AutoPermutePose for fold actions!'
-            if 'auto_permute' in self.fling_aug_types:
-                fling_aug_list.append(aug.AutoPermutePoseV3())
+            if 'auto_permute' in self.other_aug_types:
+                other_aug_list.append(aug.AutoPermutePoseV3())
             assert 'random_permute' not in self.normal_aug_types, 'Do not support RandomPermutePose for normal actions!'
             assert 'random_permute' not in self.fold_aug_types, 'Do not support RandomPermutePose for fold actions!'
-            if 'random_permute' in self.fling_aug_types:
-                fling_aug_list.append(aug.RandomPermutePoseV3())
+            if 'random_permute' in self.other_aug_types:
+                other_aug_list.append(aug.RandomPermutePoseV3())
             self.transform_action_normal = aug.SequentialV3(normal_aug_list)
-            self.transform_action_fling = aug.SequentialV3(fling_aug_list)
+            self.transform_action_fling = aug.SequentialV3(other_aug_list)
             self.transform_action_fold = aug.SequentialV3(fold_aug_list)
 
         self.primitive_classes = list(primitive_classes)
@@ -165,18 +165,6 @@ class ImitationDataset5(Dataset):
         else:
             reward = max(normalized_coverage2 - normalized_coverage1, 0.)
         return reward
-
-    def find_fling_action_step(self, idx: int) -> Tuple[int, int]:
-        video_id = self.df['video_id'][idx]
-        cur_video_frames = self.df[self.df['video_id'] == video_id]
-        sample_id = self.df['sample_id'][idx]
-        cur_fling_frames = cur_video_frames[cur_video_frames['action_type'] == 0]
-        if sample_id in list(cur_fling_frames['sample_id']):
-            cur_fling_step = list(cur_fling_frames['sample_id']).index(sample_id)
-        else:
-            cur_fling_step = None
-        max_fling_steps = len(cur_fling_frames)
-        return cur_fling_step, max_fling_steps
 
     def read_pcd(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
         pcd_path = osp.join(self.data_dir, self.df['pcd_path_frame1'][idx]).replace('\\', '/')
@@ -375,7 +363,7 @@ class ImitationDataModule5(pl.LightningDataModule):
         dataset_split = kwargs['dataset_split']
 
         train_args = dict(kwargs)
-        train_dataset = ImitationDataset5(**train_args)
+        train_dataset = ImitationDataset(**train_args)
         val_dataset = copy.deepcopy(train_dataset)
         val_dataset.use_augmentation = False
         val_dataset.static_epoch_seed = True
@@ -495,14 +483,14 @@ class ImitationDataModule5(pl.LightningDataModule):
 
 if __name__ == '__main__':
     np.random.seed(242134)
-    dataset = ImitationDataset5(
+    dataset = ImitationDataset(
         h5_path='/home/hanxue/data/DeformPAM/VR_Imitation/vr_imitation_flattening-folding-long_v5_dataset/Tshirt/data.h5',
         use_augmentation=False,
-        fling_aug_types=('depth', 'flip', 'affine', 'random_permute'),
+        other_aug_types=('depth', 'flip', 'affine', 'random_permute'),
         fold_aug_types=('depth', 'affine'),
         normal_aug_types=('depth', 'affine'),
         max_fold_rot_angle=180,
-        max_fling_rot_angle=180,
+        max_other_rot_angle=180,
         voxel_size=0.002,
         num_pc_sample_final=4000,
         debug=True

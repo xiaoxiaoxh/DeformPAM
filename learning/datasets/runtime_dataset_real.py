@@ -167,7 +167,7 @@ class RuntimeDatasetReal(Dataset):
                  # data augmentation
                  use_augmentation: bool = True,
                  normal_aug_types: tuple = ('depth', 'affine'),
-                 fling_aug_types: tuple = ('depth', 'flip', 'affine', 'random_permute'),
+                 other_aug_types: tuple = ('depth', 'flip', 'affine', 'random_permute'),
                  depth_scale_range: tuple = (0.8, 1.2),
                  depth_trans_range: float = (0.0, 0.0),
                  flip_lr_percent: float = 0.5,
@@ -177,11 +177,11 @@ class RuntimeDatasetReal(Dataset):
                  max_normal_rot_angle: float = 20,
                  normal_scale_range: tuple = (0.8, 1.2),
                  normal_trans_place_pose: bool = True,
-                 fling_x_trans_range: tuple = (-0.2, 0.2),
-                 fling_y_trans_range: tuple = (-0.15, 0.15),
-                 max_fling_rot_angle: float = 30,
-                 fling_scale_range: tuple = (0.8, 1.2),
-                 fling_trans_place_pose: bool = False,
+                 other_x_trans_range: tuple = (-0.2, 0.2),
+                 other_y_trans_range: tuple = (-0.15, 0.15),
+                 max_other_rot_angle: float = 30,
+                 other_scale_range: tuple = (0.8, 1.2),
+                 other_trans_place_pose: bool = False,
                  label_smoothing_value: float = 0.15,
                  use_zero_center: bool = False,
                  use_ood_points_removal: bool = False,
@@ -258,22 +258,22 @@ class RuntimeDatasetReal(Dataset):
         self.use_augmentation = use_augmentation
         self.use_ood_points_removal = use_ood_points_removal
         self.normal_aug_types = normal_aug_types
-        self.fling_aug_types = fling_aug_types
+        self.other_aug_types = other_aug_types
         depth_scale_range = depth_scale_range
         depth_trans_range = depth_trans_range
-        max_fling_rot_angle = max_fling_rot_angle
+        max_other_rot_angle = max_other_rot_angle
         self.transform_action_normal = None
         self.transform_action_fling = None
         if use_augmentation:
             normal_aug_list = []
-            fling_aug_list = []
+            other_aug_list = []
             if 'depth' in self.normal_aug_types:
                 normal_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, trans_range=depth_trans_range))
-            if 'depth' in self.fling_aug_types:
-                fling_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, trans_range=depth_trans_range))
+            if 'depth' in self.other_aug_types:
+                other_aug_list.append(aug.DepthV3(scale_range=depth_scale_range, trans_range=depth_trans_range))
             assert 'flip' not in self.normal_aug_types, 'Do not support flip transforms for normal action!'
-            if 'flip' in self.fling_aug_types:
-                fling_aug_list.append(aug.FlipV3(lr_percent=flip_lr_percent, ud_percent=flip_ud_percent, trans_place_pose=fling_trans_place_pose))  # only flip left-right
+            if 'flip' in self.other_aug_types:
+                other_aug_list.append(aug.FlipV3(lr_percent=flip_lr_percent, ud_percent=flip_ud_percent, trans_place_pose=other_trans_place_pose))  # only flip left-right
             if 'affine' in self.normal_aug_types:
                 normal_aug_list.append(aug.AffineV3(
                     x_trans_range=normal_x_trans_range,
@@ -283,23 +283,23 @@ class RuntimeDatasetReal(Dataset):
                     trans_place_pose=normal_trans_place_pose,
                     use_zero_center=use_zero_center,
                 ))
-            if 'affine' in self.fling_aug_types:
-                fling_aug_list.append(aug.AffineV3(
-                    x_trans_range=fling_x_trans_range,
-                    y_trans_range=fling_y_trans_range,
-                    rot_angle_range=(-np.pi / 180 * max_fling_rot_angle, np.pi / 180 * max_fling_rot_angle),
-                    scale_range=fling_scale_range,
-                    trans_place_pose=fling_trans_place_pose,
+            if 'affine' in self.other_aug_types:
+                other_aug_list.append(aug.AffineV3(
+                    x_trans_range=other_x_trans_range,
+                    y_trans_range=other_y_trans_range,
+                    rot_angle_range=(-np.pi / 180 * max_other_rot_angle, np.pi / 180 * max_other_rot_angle),
+                    scale_range=other_scale_range,
+                    trans_place_pose=other_trans_place_pose,
                     use_zero_center=use_zero_center,
                 ))
             assert 'auto_permute' not in self.normal_aug_types, 'Do not support AutoPermutePose for normal actions!'
-            if 'auto_permute' in self.fling_aug_types:
-                fling_aug_list.append(aug.AutoPermutePoseV3())
+            if 'auto_permute' in self.other_aug_types:
+                other_aug_list.append(aug.AutoPermutePoseV3())
             assert 'random_permute' not in self.normal_aug_types, 'Do not support RandomPermutePose for normal actions!'
-            if 'random_permute' in self.fling_aug_types:
-                fling_aug_list.append(aug.RandomPermutePoseV3())
+            if 'random_permute' in self.other_aug_types:
+                other_aug_list.append(aug.RandomPermutePoseV3())
             self.transform_action_normal = aug.SequentialV3(normal_aug_list, use_torch=True)
-            self.transform_action_fling = aug.SequentialV3(fling_aug_list, use_torch=True)
+            self.transform_action_fling = aug.SequentialV3(other_aug_list, use_torch=True)
 
         # add ratio statistics for different actions
         # ...
@@ -528,7 +528,7 @@ class RuntimeDatasetReal(Dataset):
             pose[np.isnan(pose)] = 0.
         return pose
 
-    def get_fling_rankings(self, data_sample: OmegaConf, grasp_point_all=None):
+    def get_rankings(self, data_sample: OmegaConf, grasp_point_all=None):
         if grasp_point_all is None:
             grasp_point_pred = np.asarray(data_sample[self.namespace]['pose_virtual']['prediction']['begin']).astype(np.float32)  # (K, 6)
             grasp_point_all = grasp_point_pred[:, :3]  # (K, 3) we only need (x, y, z) coordinate
@@ -633,7 +633,7 @@ class RuntimeDatasetReal(Dataset):
             # get fling-rankings
             virtual_prediction_grasp_point_all = np.array(virtual_prediction_poses)[:, 0:3:2, :3].reshape(-1, 3)
             grasp_point_pair1_numpy, grasp_point_pair2_numpy, grasp_pair_scores_numpy, rankings_numpy = \
-                self.get_fling_rankings(data_sample, grasp_point_all=virtual_prediction_grasp_point_all)            
+                self.get_rankings(data_sample, grasp_point_all=virtual_prediction_grasp_point_all)            
             # transform to torch tensor    
             grasp_point_pair1, grasp_point_pair2, grasp_pair_scores, rankings = torch.from_numpy(grasp_point_pair1_numpy), \
                 torch.from_numpy(grasp_point_pair2_numpy), torch.from_numpy(grasp_pair_scores_numpy), torch.from_numpy(rankings_numpy)

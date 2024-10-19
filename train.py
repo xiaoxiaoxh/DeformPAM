@@ -16,7 +16,7 @@ from omegaconf import DictConfig, OmegaConf
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import MLFlowLogger
 
-from learning.datasets.imitation_dataset5 import ImitationDataModule5
+from learning.datasets.imitation_dataset import ImitationDataModule5
 from learning.datasets.runtime_dataset_real import RuntimeDataModuleReal
 from learning.net.primitive_diffusion import PrimitiveDiffusion
 

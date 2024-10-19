@@ -10,7 +10,7 @@ import numpy as np
 import pytorch_lightning as pl
 
 from common.datamodels import ActionTypeDef
-from learning.datasets.imitation_dataset5 import ImitationDataModule5
+from learning.datasets.imitation_dataset import ImitationDataModule5
 from learning.datasets.runtime_dataset_real import RuntimeDataModuleReal
 from learning.net.primitive_diffusion import PrimitiveDiffusion
 

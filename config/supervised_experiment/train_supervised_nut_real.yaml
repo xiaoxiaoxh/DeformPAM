@@ -14,9 +14,9 @@ datamodule:
 runtime_datamodule:
   # we use the scaling factor to normalize the xy plane
   normal_trans_place_pose: True
-  fling_trans_place_pose: True
+  other_trans_place_pose: True
   normal_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
-  fling_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  other_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
   num_pc_sample_final: *num_pc_sample_final
   voxel_size: *voxel_size
   valid_primitive: ['sweep']

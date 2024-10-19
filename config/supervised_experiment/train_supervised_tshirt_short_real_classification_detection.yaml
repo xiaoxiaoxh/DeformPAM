@@ -5,7 +5,7 @@ defaults:
 
 runtime_datamodule:
   max_normal_rot_angle: 180
-  max_fling_rot_angle: 180
+  max_other_rot_angle: 180
 
 model:
   enable_new_pipeline_supervised_classification_detection: True

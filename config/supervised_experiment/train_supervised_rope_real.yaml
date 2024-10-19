@@ -14,12 +14,12 @@ datamodule:
 runtime_datamodule:
   # we use the scaling factor to normalize the xy plane
   normal_trans_place_pose: True
-  fling_trans_place_pose: True
+  other_trans_place_pose: True
   # any rotation is allowed
   max_normal_rot_angle: 180 # 20
-  max_fling_rot_angle: 180 # 25
+  max_other_rot_angle: 180 # 25
   normal_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
-  fling_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  other_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
   num_pc_sample_final: *num_pc_sample_final
   voxel_size: *voxel_size
   valid_primitive: ['single_pick_and_place']

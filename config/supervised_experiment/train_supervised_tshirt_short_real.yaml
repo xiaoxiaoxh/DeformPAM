@@ -22,14 +22,14 @@ runtime_datamodule:
   # data augmentation
   use_augmentation: True
   normal_aug_types: [ depth, affine ]
-  fling_aug_types: [ depth, flip, affine, random_permute ]
+  other_aug_types: [ depth, flip, affine, random_permute ]
   label_smoothing_value: 0.15
   # do not flip left-right because the gt depends on the side
   flip_lr_percent: 0.0
   flip_ud_percent: 0.0
   max_normal_rot_angle: 20
   # do not rotate too much because the gt depends on the side
-  max_fling_rot_angle: 25 # 25
+  max_other_rot_angle: 25 # 25
   # normal augmentation ----------------
   normal_x_trans_range: [ 0.0, 0.0 ] # [ -0.1, 0.1]
   normal_y_trans_range: [ 0.0, 0.0 ] # [ -0.1, 0.1]
@@ -37,10 +37,10 @@ runtime_datamodule:
   normal_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
   # -----------------------------------
   # fling augmentation ----------------
-  fling_x_trans_range: [ 0.0, 0.0 ] # [ -0.2, 0.2 ]
-  fling_y_trans_range: [ 0.0, 0.0 ] # [ -0.15, 0.15 ]
+  other_x_trans_range: [ 0.0, 0.0 ] # [ -0.2, 0.2 ]
+  other_y_trans_range: [ 0.0, 0.0 ] # [ -0.15, 0.15 ]
   # we use the scaling factor to normalize the xy plane
-  fling_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
+  other_scale_range: [ *xy_normalize_factor, *xy_normalize_factor] # [ 0.8, 1.2 ]
   # -----------------------------------
   use_zero_center: True
   use_ood_points_removal: True
