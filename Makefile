@@ -80,7 +80,7 @@ supervised.run_real: manipulation.prerun
         experiment.compat.calibration_path=${CALIBRATION_PATH} \
         camera_param=${CAMERA_PARAM} \
         logging.tag=${LOGGING_TAG_SUPERVISED} \
-        inference.model_path=SUPERVISED_MODEL_CKPT_PATH \
+        inference.model_path=${SUPERVISED_MODEL_CKPT_PATH} \
         inference.args.vis_action=False \
         inference.args.vis_all_fling_pred=False \
         inference.args.manual_operation.remote_args.enable=False \
@@ -147,7 +147,7 @@ finetune.run_real: manipulation.prerun
         camera_param=${CAMERA_PARAM} \
         logging.namespace=${RAW_LOG_NAMESPACE_FINETUNE} \
         logging.tag=${LOGGING_TAG_FINETUNE} \
-        inference.model_path=SUPERVISED_MODEL_CKPT_PATH \
+        inference.model_path=${SUPERVISED_MODEL_CKPT_PATH} \
         inference.args.vis_action=True \
         inference.args.vis_all_fling_pred=True \
         inference.args.vis_pred_order=False \
@@ -185,7 +185,7 @@ finetune.train_real:
                 runtime_datamodule.namespace=${RAW_LOG_NAMESPACE_FINETUNE} \
                 runtime_datamodule.tag=${LOGGING_TAG_FINETUNE} \
                 +runtime_datamodule.manual_num_rankings_per_sample=${COMPARE_K} \
-                +model.reference_model_path=SUPERVISED_MODEL_CKPT_PATH \
+                +model.reference_model_path=${SUPERVISED_MODEL_CKPT_PATH} \
 
 # finetuning using real data with reward prediction
 finetune.train_real_reward_prediction:
@@ -197,7 +197,7 @@ finetune.train_real_reward_prediction:
                 runtime_datamodule.namespace=${RAW_LOG_NAMESPACE_FINETUNE} \
                 runtime_datamodule.tag=${LOGGING_TAG_FINETUNE} \
                 +runtime_datamodule.manual_num_rankings_per_sample=${COMPARE_K} \
-                +model.reference_model_path=SUPERVISED_MODEL_CKPT_PATH \
+                +model.reference_model_path=${SUPERVISED_MODEL_CKPT_PATH} \
 
 STEP_NUM_PER_TRIAL = $(shell if [ ${TASK_TYPE} = "tshirt_short" ]; then echo 10; \
 				elif [ ${TASK_TYPE} = "tshirt_long" ]; then echo 10; \
