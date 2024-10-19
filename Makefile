@@ -39,12 +39,12 @@ COMPARE_K = 16
 INFERENCE_POINT_NUM = 16
 KEYPOINT_NUM = 4
 
-CALIBRATION_PATH = /path/to/calibration
+CALIBRATION_PATH = /path/to/calibration/folder
 # select the camera to use
 CAMERA_PARAM = phoxi_camera_with_rgb
 
-SUPERVISED_MODEL_CKPT_PATH = /path/to/supervised_model
-TEST_MODEL_CKPT_PATH = /path/to/test_model
+SUPERVISED_MODEL_CKPT_PATH = /path/to/supervised_model/folder
+TEST_MODEL_CKPT_PATH = /path/to/test_model/folder
 
 .PHONY: all
 all:
