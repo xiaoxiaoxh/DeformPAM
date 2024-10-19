@@ -38,18 +38,12 @@
   - [Tasks and Hardware Setup](#tasks-and-hardware-setup)
 - [⚙️ Environment Setup](#️-environment-setup)
   - [🧠 Learning Environment](#-learning-environment)
-    - [🔽 Pre-trained Models](#-pre-trained-models)
   - [🤖 Real Environment](#-real-environment)
-    - [📷 Camera](#-camera)
-    - [🦾 Robot](#-robot)
   - [📦 Miscs](#-miscs)
-    - [🔧 Tools](#-tools)
 - [📕 Usage](#-usage)
   - [🔍 Inference](#-inference)
   - [📚 Train Your Own Model](#-train-your-own-model)
-    - [Stage 1 (Supervised Learning)](#stage-1-supervised-learning)
-    - [Stage 2 (Preference Learning)](#stage-2-preference-learning)
-- [🙏 Acknowlegement](#-acknowlegement)
+- [🙏 Acknowledgement](#-acknowledgement)
 - [🔗 Citation](#-citation)
 
 ## 📄 Introduction
@@ -118,7 +112,7 @@ Finally, see [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Any
 
 #### 📷 Camera
 
-Our project should work on any commercial 3D cameras systems that produce colorful point cloud and RGB images. However, for the best performance, we recommend high-precision and high-resolution 3D cameras. In our experiment, we adopt [Photoneo MotionCam3D M+](https://www.photoneo.com/products/motioncam-3d-m-plus/) adn [Mech-Mind Mech-Eye LSR L](https://community.mech-mind.com/t/topic/2112) as the main 3D camera. However, if you are using custom cameras, please re-implement `get_obs()` method in [manipulation.experiment_real::ExperimentReal](manipulation/experiment_real.py#L408).
+Our project should work on any commercial 3D cameras systems that produce colorful point cloud and RGB images. However, for the best performance, we recommend high-precision and high-resolution 3D cameras. In our experiment, we adopt [Photoneo MotionCam3D M+](https://www.photoneo.com/products/motioncam-3d-m-plus/) and [Mech-Mind Mech-Eye LSR L](https://community.mech-mind.com/t/topic/2112) as the main 3D camera. However, if you are using custom cameras, please re-implement `get_obs()` method in [manipulation.experiment_real::ExperimentReal](manipulation/experiment_real.py#L408).
 
 Please generate the calibration files and set the `CALIBRATION_PATH` in [Makefile](Makefile). You can take [tools/handeye_cali.py](handeye_cali.py) and [tools/find_world_transform_from_robot_cali.py](find_world_transform_from_robot_cali.py) for reference.
 
@@ -144,7 +138,7 @@ make test_real
 
 ### 📚 Train Your Own Model
 
-The training pipeline includes 2 stages, all wrapped as Makefie targets. You can download the data from [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM) or collect your own data according to the following instructions.
+The training pipeline includes 2 stages, all wrapped as Makefile targets. You can download the data from [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM) or collect your own data according to the following instructions.
 
 #### Stage 1 (Supervised Learning)
 
@@ -171,9 +165,9 @@ make scripts.run_finetune_sort_annotation
 make finetune.train_real
 ```
 
-## 🙏 Acknowlegement
+## 🙏 Acknowledgement
 
-The data annotation tool and motion primitives used in our code is adapted from [UniFolding](https://github.com/xiaoxiaoxh/UniFolding).
+The motion primitives, data annotation tool, and some useful code used in our project are adapted from [UniFolding](https://github.com/xiaoxiaoxh/UniFolding).
 
 ## 🔗 Citation
 If you find this work helpful, please consider citing:
