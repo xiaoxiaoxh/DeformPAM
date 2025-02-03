@@ -3,6 +3,9 @@
     <br>Long-horizon <u>Deform</u>able Object Manipulation via
     <br><u>P</u>reference-based <u>A</u>ction Align<u>m</u>ent
 </h3>
+<h4 align="center">
+    ICRA 2025
+</h4>
 
 <p align="center">
     <a href="https://github.com/ChenWendi2001">Wendi Chen</a><sup>1*</sup>,
@@ -25,6 +28,7 @@
 </div>
 
 ## News
+- **2025.01**: DeformPAM is accepted to ICRA 2025! 🎉
 - **2024.10**: We release the pretrained models on Google Drive.
 - **2024.10**: We release the data on Hugging Face.
 - **2024.10**: We release the code of DeformPAM.
