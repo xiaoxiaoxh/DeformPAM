@@ -8,7 +8,7 @@
 </h4>
 
 <p align="center">
-    <a href="https://github.com/ChenWendi2001">Wendi Chen</a><sup>1*</sup>,
+    <a href="https://wendichen.me">Wendi Chen</a><sup>1*</sup>,
     <a href="https://hanxue.me">Han Xue</a><sup>1*</sup>,
     Fangyuan Zhou<sup>1</sup>,
     Yuan Fang<sup>1</sup>,
