@@ -67,7 +67,7 @@ In long-horizon manipulation tasks, a probabilistic policy may encounter distrib
 
 ![pipeline](assets/pipeline.png)
 
-- In stage ①, we assign actions for execution and annotate auxiliary actions for supervised learning in a real-world environment and train a supervised primitive model based on Diffusion.
+- In stage ①, we assign actions for execution and annotate auxiliary actions for supervised learning in a real-world environment and train a supervised primitive model based on Diffusion. Circles with the same numbers represent the manipulation positions for an action.
 - In stage ②, we deploy this model in the environment to collect preference data composed of annotated and predicted actions. These data are used to train a DPO-finetuned model.
 - During stage ③ (inference), we utilize the supervised model to predict actions and employ an implicit reward model derived from two models for Reward-guided Action Selection (RAS). The action with the highest reward is regarded as the final prediction.
 
