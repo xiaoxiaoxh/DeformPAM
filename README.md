@@ -29,7 +29,7 @@
 
 ## News
 - **2025.01**: DeformPAM is accepted to ICRA 2025! 🎉
-- **2024.10**: We release the pretrained models.
+- **2024.10**: We release the checkpoints.
 - **2024.10**: We release the data.
 - **2024.10**: We release the code of DeformPAM.
 
