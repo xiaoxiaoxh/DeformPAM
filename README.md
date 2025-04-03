@@ -134,7 +134,7 @@ Please refer to [tools/data_management/README.md](tools/data_management/README.m
 
 ### 🔍 Inference
 
-You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment. The pre-trained models can be downloaded at [![Pretrained Models](https://img.shields.io/badge/Pretrained%20Models-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/WendiChen/DeformPAM_PrimitiveDiffusion).
+You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment. The pre-trained models can be downloaded on [![Pretrained Models](https://img.shields.io/badge/Pretrained%20Models-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/WendiChen/DeformPAM_PrimitiveDiffusion).
 
 ```bash
 make test_real
@@ -142,7 +142,7 @@ make test_real
 
 ### 📚 Train Your Own Model
 
-The training pipeline includes 2 stages, all wrapped as Makefile targets. You can download the data at [![Data](https://img.shields.io/badge/Data-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM_Dataset) or collect your own data according to the following instructions.
+The training pipeline includes 2 stages, all wrapped as Makefile targets. You can download the data on [![Data](https://img.shields.io/badge/Data-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM_Dataset) or collect your own data according to the following instructions.
 
 #### Stage 1 (Supervised Learning)
 
