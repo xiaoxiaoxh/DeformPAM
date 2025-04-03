@@ -22,8 +22,8 @@
 <div align="center">
 <a href='https://arxiv.org/abs/2410.11584'><img alt='arXiv' src='https://img.shields.io/badge/arXiv-2410.11584-red.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <a href='https://deform-pam.robotflow.ai'><img alt='project website' src='https://img.shields.io/website-up-down-green-red/http/cv.lbesson.qc.to.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;
-<a href='https://huggingface.co/datasets/WendiChen/DeformPAM_Dataset'><img alt='Data' src='https://img.shields.io/badge/Data-FFD21E?logo=huggingface&logoColor=000'></a> &nbsp;&nbsp;&nbsp;&nbsp;
-<a href='https://huggingface.co/WendiChen/DeformPAM_PrimitiveDiffusion'><img alt='Pretrained Models' src='https://img.shields.io/badge/Pretrained%20Models-FFD21E?logo=huggingface&logoColor=000'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='https://huggingface.co/datasets/WendiChen/DeformPAM_Dataset'><img alt='data' src='https://img.shields.io/badge/data-FFD21E?logo=huggingface&logoColor=000'></a> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='https://huggingface.co/WendiChen/DeformPAM_PrimitiveDiffusion'><img alt='checkpoints' src='https://img.shields.io/badge/checkpoints-FFD21E?logo=huggingface&logoColor=000'></a> &nbsp;&nbsp;&nbsp;&nbsp;
 <img alt='powered by Pytorch' src='https://img.shields.io/badge/PyTorch-❤️-F8C6B5?logo=pytorch&logoColor=white'> &nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
@@ -134,7 +134,7 @@ Please refer to [tools/data_management/README.md](tools/data_management/README.m
 
 ### 🔍 Inference
 
-You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment. The pre-trained models can be downloaded on [![Pretrained Models](https://img.shields.io/badge/Pretrained%20Models-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/WendiChen/DeformPAM_PrimitiveDiffusion).
+You can modify the [`TASK_TYPE`](Makefile#L3), [`SUPERVISED_MODEL_CKPT_PATH`](Makefile#L46), and [`TEST_MODEL_CKPT_PATH`](Makefile#L47) in [Makefile](Makefile) and run the following command to conduct inference on the real-world environment. The pre-trained models can be downloaded on [![checkpoints](https://img.shields.io/badge/checkpoints-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/WendiChen/DeformPAM_PrimitiveDiffusion).
 
 ```bash
 make test_real
@@ -142,7 +142,7 @@ make test_real
 
 ### 📚 Train Your Own Model
 
-The training pipeline includes 2 stages, all wrapped as Makefile targets. You can download the data on [![Data](https://img.shields.io/badge/Data-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM_Dataset) or collect your own data according to the following instructions.
+The training pipeline includes 2 stages, all wrapped as Makefile targets. You can download the data on [![data](https://img.shields.io/badge/data-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/WendiChen/DeformPAM_Dataset) or collect your own data according to the following instructions.
 
 #### Stage 1 (Supervised Learning)
 
