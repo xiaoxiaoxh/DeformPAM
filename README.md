@@ -8,15 +8,15 @@
 </h4>
 
 <p align="center">
-    <a href="https://wendichen.me">Wendi Chen</a><sup>12*</sup>,
-    <a href="https://hanxue.me">Han Xue</a><sup>12*</sup>,
-    Fangyuan Zhou<sup>1</sup>,
-    Yuan Fang<sup>1</sup>,
-    <a href="https://www.mvig.org/">Cewu Lu</a><sup>13</sup>
+    <a href="https://wendichen.me">Wendi Chen</a><sup>123*</sup>,
+    <a href="https://hanxue.me">Han Xue</a><sup>23*</sup>,
+    Fangyuan Zhou<sup>2</sup>,
+    Yuan Fang<sup>2</sup>,
+    <a href="https://www.mvig.org/">Cewu Lu</a><sup>12</sup>
     <br>
-    <sup>1</sup>Shanghai Jiao Tong University
-    <sup>2</sup>Meta Robotics Institute, SJTU
-    <sup>3</sup>Shanghai Innovation Institute
+    <sup>1</sup>Shanghai Innovation Institute
+    <sup>2</sup>Shanghai Jiao Tong University
+    <sup>3</sup>Meta Robotics Institute, SJTU
     <br>
     <sup>*</sup> indicates equal contribution
     <br>
