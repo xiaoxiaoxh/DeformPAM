@@ -10,7 +10,7 @@
 <p align="center">
     <a href="https://wendichen.me">Wendi Chen</a><sup>123*</sup>,
     <a href="https://hanxue.me">Han Xue</a><sup>23*</sup>,
-    Fangyuan Zhou<sup>2</sup>,
+    <a href="https://uimicro.com">Fangyuan Zhou</a><sup>2</sup>,
     Yuan Fang<sup>2</sup>,
     <a href="https://www.mvig.org/">Cewu Lu</a><sup>12</sup>
     <br>
